@@ -2,7 +2,7 @@ local M = {}
 
 --- @class DiffOpts
 --- @field unified? boolean
---- @field split? "left" | "right" | "above" | "below"
+--- @field position? "left" | "right" | "above" | "below" | "tab"
 --- @field cursorline? boolean
 M.opts = {}
 

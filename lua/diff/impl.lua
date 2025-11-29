@@ -1,6 +1,7 @@
 return function(call, opts)
     local unified = opts.unified
     local cursorline = opts.cursorline == true
+    local position = opts.position or opts.split or "below"
     local selection = vim.api.nvim_buf_get_lines(0, call.line1 - 1, call.line2, true)
 
     local lines
@@ -26,12 +27,19 @@ return function(call, opts)
     vim.api.nvim_buf_set_lines(buffers[1], 0, -1, true, selection)
     vim.api.nvim_buf_set_lines(buffers[2], 0, -1, true, lines)
 
-    local windows = {
-        vim.api.nvim_open_win(buffers[1], true, {
-            win = -1,
-            split = opts.split or "below",
-        })
-    }
+    local windows = {}
+    if position == "tab" then
+        vim.cmd.tabnew()
+        table.insert(windows, vim.api.nvim_get_current_win())
+        vim.api.nvim_win_set_buf(windows[1], buffers[1])
+    else
+        table.insert(windows,
+            vim.api.nvim_open_win(buffers[1], true, {
+                win = -1,
+                split = position,
+            })
+        )
+    end
 
     if not cursorline then
         vim.wo.cursorline = false
@@ -42,7 +50,7 @@ return function(call, opts)
         vim.api.nvim_win_set_buf(windows[1], buffers[2])
     else
         table.insert(windows, vim.api.nvim_open_win(
-            buffers[2], true, { split = "right", }))
+            buffers[2], true, { split = "right" }))
     end
 
     if not cursorline then
@@ -87,6 +95,9 @@ return function(call, opts)
         vim.api.nvim_del_autocmd(autocmd_id)
         for _, win in ipairs(windows) do
             pcall(vim.api.nvim_win_close, win, true)
+        end
+        for _, buf in ipairs(buffers) do
+            pcall(vim.api.nvim_buf_delete, buf, { force = true })
         end
         for _, buf in ipairs(buffers) do
             pcall(vim.api.nvim_buf_delete, buf, { force = true })
