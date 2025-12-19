@@ -1,6 +1,6 @@
 # diff.nvim
 Allows you to diff your visual selection against another file or register.
-Supports and automatically uses [vscode-diff.nvim](esmuellert/vscode-diff.nvim) if it is installed.
+Supports and automatically uses [vscode-diff.nvim](https://github.com/esmuellert/vscode-diff.nvim) if it is installed.
 
 https://github.com/user-attachments/assets/fdf0785f-e20d-46a1-b9aa-fd9076f176cc
 
